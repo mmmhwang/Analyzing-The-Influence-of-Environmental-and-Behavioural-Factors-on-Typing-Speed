@@ -48,6 +48,7 @@ t_m_d_p <- c(1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, 1, -1,
              -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1)
 
 
-df <- data.frame(b,t,m,d,p,y,t_m,t_d,t_p,m_d,m_p,d_p,t_m_d,t_m_p,t_d_p,m_d_p,
+df <- data.frame(b,t,m,d,p,t_m,t_d,t_p,m_d,m_p,d_p,t_m_d,t_m_p,t_d_p,m_d_p,
                  t_m_d_p)
+y
 head(df)
