@@ -1,3 +1,4 @@
+library(MASS)
 #Blocking and Main Effects
 b <- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
        3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3)
@@ -12,20 +13,40 @@ p <- c(1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,
 y <- c(54, 60, 93, 98, 45, 49, 104, 91, 53, 66, 108, 99, 56, 60, 105, 102,
        62, 60, 67, 68, 61, 59, 69, 67, 69, 66, 75, 62, 68, 67, 72, 70, 70, 
        65, 83, 77, 65, 58, 78, 76, 60, 64, 79, 85, 57, 56, 73, 86)
+
+b <- factor(b)
+t <- factor(t)
+m <- factor(m)
+d <- factor(d)
+p <- factor(p)
 #Interaction Effects
-t_m <- t * m
-t_d <- t * d
-t_p <- t * p
-m_d <- m * d
-m_p <- m * p
-d_p <- d * p
-t_m_d <- t * m * d
-t_m_p <- t * m * p
-t_d_p <- t * d * p
-m_d_p <- m * d * p
-t_m_d_p <- t * m * d * p
+t_m <- as.numeric(as.character(t)) * as.numeric(as.character(m))
+t_d <- as.numeric(as.character(t)) * as.numeric(as.character(d))
+t_p <- as.numeric(as.character(t)) * as.numeric(as.character(p))
+m_d <- as.numeric(as.character(m)) * as.numeric(as.character(d))
+m_p <- as.numeric(as.character(m)) * as.numeric(as.character(p))
+d_p <- as.numeric(as.character(d)) * as.numeric(as.character(p))
+t_m_d <- as.numeric(as.character(t)) * as.numeric(as.character(m)) * 
+  as.numeric(as.character(d))
+t_m_p <- as.numeric(as.character(t)) * as.numeric(as.character(m)) * 
+  as.numeric(as.character(p))
+t_d_p <- as.numeric(as.character(t)) * as.numeric(as.character(d)) * 
+  as.numeric(as.character(p))
+m_d_p <- as.numeric(as.character(m)) * as.numeric(as.character(d)) * 
+  as.numeric(as.character(p))
+t_m_d_p <- as.numeric(as.character(t)) * as.numeric(as.character(m)) * 
+  as.numeric(as.character(d)) * as.numeric(as.character(p))
 
 df <- data.frame(b,t,m,d,p,t_m,t_d,t_p,m_d,m_p,d_p,t_m_d,t_m_p,t_d_p,m_d_p,
                  t_m_d_p)
-y
-head(df)
+
+boxcox(y ~ ., data = df,
+      lambda = seq(-1, 2, len = 21),
+      ylab = "Log likelihood" )
+
+#Apply sqrt transformation
+y_transformed <- sqrt(y)
+
+boxcox(y_transformed ~ ., data = df,
+       lambda = seq(-1, 2, len = 21),
+       ylab = "Log likelihood" )
