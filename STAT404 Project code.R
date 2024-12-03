@@ -20,6 +20,22 @@ m <- factor(m)
 d <- factor(d)
 p <- factor(p)
 #Interaction Effects
+b_t <- as.numeric(as.character(b)) * as.numeric(as.character(t))
+b_m <- as.numeric(as.character(b)) * as.numeric(as.character(m))
+b_d <- as.numeric(as.character(b)) * as.numeric(as.character(d))
+b_p <- as.numeric(as.character(b)) * as.numeric(as.character(p))
+b_t_m <- as.numeric(as.character(b)) * t_m
+b_t_d <- as.numeric(as.character(b)) * t_d
+b_t_p <- as.numeric(as.character(b)) * t_p
+b_m_d <- as.numeric(as.character(b)) * m_d
+b_m_p <- as.numeric(as.character(b)) * m_p
+b_d_p <- as.numeric(as.character(b)) * d_p
+b_t_m_d <- as.numeric(as.character(b)) * t_m_d
+b_t_m_p <- as.numeric(as.character(b)) * t_m_p
+b_t_d_p <- as.numeric(as.character(b)) * t_d_p
+b_m_d_p <- as.numeric(as.character(b)) * m_d_p
+b_t_m_d_p <- as.numeric(as.character(b)) * t_m_d_p
+
 t_m <- as.numeric(as.character(t)) * as.numeric(as.character(m))
 t_d <- as.numeric(as.character(t)) * as.numeric(as.character(d))
 t_p <- as.numeric(as.character(t)) * as.numeric(as.character(p))
@@ -37,8 +53,13 @@ m_d_p <- as.numeric(as.character(m)) * as.numeric(as.character(d)) *
 t_m_d_p <- as.numeric(as.character(t)) * as.numeric(as.character(m)) * 
   as.numeric(as.character(d)) * as.numeric(as.character(p))
 
-df <- data.frame(b,t,m,d,p,t_m,t_d,t_p,m_d,m_p,d_p,t_m_d,t_m_p,t_d_p,m_d_p,
-                 t_m_d_p)
+#excluded  b_t_m_d_p, t_m_d_p, b_t_m_d, b_t_m_p, b_t_d_p, b_m_d_p,
+#b_t_m, b_t_d, b_t_p, b_m_d, b_m_p, b_d_p, t_m_d, t_m_p, t_d_p, m_d_p
+df <- data.frame(
+  b, t, m, d, p, 
+  t_m, t_d, t_p, m_d, m_p, d_p,
+  b_t, b_m, b_d, b_p
+)
 
 boxcox(y ~ ., data = df,
       lambda = seq(-1, 2, len = 21),
@@ -50,3 +71,13 @@ y_transformed <- sqrt(y)
 boxcox(y_transformed ~ ., data = df,
        lambda = seq(-1, 2, len = 21),
        ylab = "Log likelihood" )
+
+
+#Construct Model
+model <- lm(y_transformed ~ ., data = df)
+
+qqnorm(residuals(model))
+qqline(residuals(model), col = "red")
+
+plot(fitted.values(model), residuals(model), xlab = "Fitted Values", 
+     ylab = "Residuals", main = "Residual vs. Fitted Plot")
