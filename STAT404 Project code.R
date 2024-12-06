@@ -118,3 +118,5 @@ means <- aggregate(y_transformed_log ~ d, data = df, mean)
 print(means)
 
 summary(model)
+
+interaction.plot(df$d, df$b, response = y)
