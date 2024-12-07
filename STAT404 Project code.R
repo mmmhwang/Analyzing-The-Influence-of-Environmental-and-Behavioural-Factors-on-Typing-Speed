@@ -120,11 +120,44 @@ print(means)
 summary(model)
 
 png(filename = "interactionPlot.png", width = 350, height = 350)
-interaction.plot(df$d, df$b, response = y)
+interaction.plot(df$d, df$b, response = y, xlab = "Device",                  # X-axis label
+                 ylab = "Typing Speed",                # Y-axis label
+                 trace.label = "Subjects",         # Legend label
+                 col = rainbow(4),                 # Colors for each trace
+                 lty = 1,                          # Line type
+                 type = "b",                       # Points and lines
+                 pch = 19                          # Point character
+)
 dev.off()
+
+plot.design(y_transformed_log ~ b + t + m + d + p, data = df)
 
 treat_means <- model.tables(anova, type = "mean", se = TRUE, 
              cterms = c("d"))
+
+par(mfrow = c(3, 2))
+with(df,
+     { interaction.plot(b, t, y)
+       interaction.plot(b, m, y)
+       interaction.plot(b, d, y)
+       interaction.plot(b, p, y)
+       interaction.plot(t, m, y)
+       interaction.plot(t, d, y)
+       interaction.plot(t, p, y)
+       interaction.plot(m, d, y)
+       interaction.plot(m, p, y)
+       interaction.plot(d, p, y)})
+with(df,
+     { interaction.plot(b, t, y_transformed_log)
+       interaction.plot(b, m, y_transformed_log)
+       interaction.plot(b, d, y_transformed_log)
+       interaction.plot(b, p, y_transformed_log)
+       interaction.plot(t, m, y_transformed_log)
+       interaction.plot(t, d, y_transformed_log)
+       interaction.plot(t, p, y_transformed_log)
+       interaction.plot(m, d, y_transformed_log)
+       interaction.plot(m, p, y_transformed_log)
+       interaction.plot(d, p, y_transformed_log) })
 
 treatment_means <- data.frame(treat_means$tables[2])
 
