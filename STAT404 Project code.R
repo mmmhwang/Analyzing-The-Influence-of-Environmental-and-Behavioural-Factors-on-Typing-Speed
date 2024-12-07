@@ -178,12 +178,21 @@ pt(t_stat, df = 31, lower.tail = FALSE)
 sqrt(MSE / 1)
 qt(0.025, 31, lower.tail = FALSE)
 
-exp(kd_hat - (qt(0.025, 31, lower.tail = FALSE))*se_kd)
-exp(kd_hat + (qt(0.025, 31, lower.tail = FALSE))*se_kd)
+contrast_lower <- exp(kd_hat - (qt(0.025, 31, lower.tail = FALSE))*se_kd)
+contrast_upper <- exp(kd_hat + (qt(0.025, 31, lower.tail = FALSE))*se_kd)
 
 summary(model)
 
 exp(predict(model, newdata = data.frame(b,t,m,d,p)))
+
+dhat_lower <- exp(summary(model)$coefficients[,1]["d1"] - (qt(0.025, 31, lower.tail = FALSE))*(summary(model)$coefficients[,2]["d1"]))
+
+dhat_upper <-exp(summary(model)$coefficients[,1]["d1"] + (qt(0.025, 31, lower.tail = FALSE))*(summary(model)$coefficients[,2]["d1"]))
+
+bdhat_lower <-exp(summary(model)$coefficients[,1]["b_d"] - (qt(0.025, 31, lower.tail = FALSE))*(summary(model)$coefficients[,2]["b_d"]))
+
+bdhat_upper <-exp(summary(model)$coefficients[,1]["b_d"] + (qt(0.025, 31, lower.tail = FALSE))*(summary(model)$coefficients[,2]["b_d"]))
+
 
 #1 -1 -1 -1 -1 block 1
 
