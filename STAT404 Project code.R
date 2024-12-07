@@ -65,31 +65,31 @@ boxcox(y ~ ., data = df,
       lambda = seq(-1, 2, len = 21),
       ylab = "Log likelihood" )
 
-#Apply sqrt transformation
-y_transformed <- sqrt(y)
+# #Apply sqrt transformation
+# y_transformed <- sqrt(y)
 
-boxcox(y_transformed ~ ., data = df,
-       lambda = seq(-1, 2, len = 21),
-       ylab = "Log likelihood" )
+# boxcox(y_transformed ~ ., data = df,
+#        lambda = seq(-1, 2, len = 21),
+#        ylab = "Log likelihood" )
 
 
-#Construct Model
-model <- lm(y_transformed ~ ., data = df)
+# #Construct Model
+# model <- lm(y_transformed ~ ., data = df)
 
-qqnorm(residuals(model))
-qqline(residuals(model), col = "red")
+# qqnorm(residuals(model))
+# qqline(residuals(model), col = "red")
 
-plot(fitted.values(model), residuals(model), xlab = "Fitted Values", 
-     ylab = "Residuals", main = "Residual vs. Fitted Plot")
+# plot(fitted.values(model), residuals(model), xlab = "Fitted Values", 
+#      ylab = "Residuals", main = "Residual vs. Fitted Plot")
 
-#ANOVA
-anova <- aov(y_transformed ~ ., data = df)
-summary(anova)
+# #ANOVA
+# anova <- aov(y_transformed ~ ., data = df)
+# summary(anova)
 
-means <- aggregate(y_transformed ~ d, data = df, mean)
-print(means)
+# means <- aggregate(y_transformed ~ d, data = df, mean)
+# print(means)
 
-summary(model)
+# summary(model)
 
 
 #Apply log transformation
@@ -119,4 +119,41 @@ print(means)
 
 summary(model)
 
+png(filename = "interactionPlot.png", width = 350, height = 350)
 interaction.plot(df$d, df$b, response = y)
+dev.off()
+
+treat_means <- model.tables(anova, type = "mean", se = TRUE, 
+             cterms = c("d"))
+
+treatment_means <- data.frame(treat_means$tables[2])
+
+
+kd_hat <- treatment_means[1,1] - treatment_means[2,1]
+kd_hat
+
+
+MSE <- mean(summary(model)$residuals^2)
+MSE
+se_kd <- (2 * sqrt(MSE / 48))
+
+exp(-0.649575810)
+0.1235^2
+t_stat <- kd_hat / se_kd
+t_stat
+pt(t_stat, df = 31, lower.tail = FALSE)
+sqrt(MSE / 1)
+qt(0.025, 31, lower.tail = FALSE)
+
+exp(kd_hat - (qt(0.025, 31, lower.tail = FALSE))*se_kd)
+exp(kd_hat + (qt(0.025, 31, lower.tail = FALSE))*se_kd)
+
+summary(model)
+
+exp(predict(model, newdata = data.frame(b,t,m,d,p)))
+
+#1 -1 -1 -1 -1 block 1
+
+#2 -1 -1 -1  1 block 2
+
+#3  1  1 -1  1 block 3
